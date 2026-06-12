@@ -3,6 +3,7 @@ pyyaml
 tqdm
 httpx
 soundfile
+librosa
 torch
 silero-vad
 datasets
