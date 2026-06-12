@@ -86,7 +86,9 @@ def _viterbi_forced_align(log_probs, targets, blank):
     states = np.empty(T, dtype=np.int64)
     for t in range(T - 1, -1, -1):
         states[t] = s
-        s -= bp[t, s]
+        # int(): keep s a Python int. numpy 2.x (NEP 50) would otherwise promote
+        # `python_int - np.int8` to int8 and overflow once S > 127 (long texts).
+        s -= int(bp[t, s])
     path = labels[states]
     scores = log_probs[np.arange(T), path].astype(np.float32)
     return path, scores

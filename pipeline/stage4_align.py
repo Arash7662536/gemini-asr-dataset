@@ -13,8 +13,8 @@ import os
 from tqdm import tqdm
 
 from .aligner import align_text, load_aligner
-from .common import (JsonlWriter, add_common_args, done_ids, load_config_args,
-                     parse_shard, read_chunks, read_dict_jsonl)
+from .common import (JsonlWriter, add_common_args, done_ok_ids,
+                     load_config_args, parse_shard, read_chunks, read_dict_jsonl)
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     si, sn = parse_shard(args.shard)
 
     out_path = os.path.join(work, f"align.{si}of{sn}.jsonl")
-    done = done_ids(out_path, "chunk_id")
+    done = done_ok_ids(out_path)  # retry rows whose last attempt errored (e.g. old crashes)
 
     chunks = read_chunks(work)
     transcripts = read_dict_jsonl(os.path.join(work, "transcripts.jsonl"))

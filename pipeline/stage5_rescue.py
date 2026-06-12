@@ -29,7 +29,7 @@ import numpy as np
 from tqdm import tqdm
 
 from .aligner import align_text, load_aligner
-from .common import (JsonlWriter, add_common_args, cer, decode_mono, done_ids,
+from .common import (JsonlWriter, add_common_args, cer, decode_mono,
                      done_ok_ids, load_config_args, normalize_train,
                      read_chunks, read_dict_jsonl, read_jsonl)
 from .openrouter import transcribe_items
@@ -151,7 +151,7 @@ def phase_b(cfg, work, candidates, chunks, transcripts):
     lang = cfg["stage4"]["language"]
     retries = read_dict_jsonl(os.path.join(work, "rescue_retry.jsonl"))
     out_path = os.path.join(work, "rescue.jsonl")
-    done = done_ids(out_path, "chunk_id")
+    done = done_ok_ids(out_path)  # retry rows whose last attempt errored (e.g. old crashes)
     todo = [cid for cid in sorted(candidates)
             if cid not in done and retries.get(cid, {}).get("ok")]
     if not todo:
