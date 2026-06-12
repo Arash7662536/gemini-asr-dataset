@@ -1,0 +1,12 @@
+numpy
+pyyaml
+tqdm
+httpx
+soundfile
+torch
+silero-vad
+datasets
+# CTC forced aligner — the GitHub torch package (loads the HuggingFace
+# checkpoint MahmoudAshraf/mms-300m-1130-forced-aligner). Do NOT pip install
+# the PyPI package of the same name; it is a different (ONNX) project.
+ctc-forced-aligner @ git+https://github.com/MahmoudAshraf97/ctc-forced-aligner.git

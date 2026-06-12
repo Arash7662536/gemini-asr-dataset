@@ -1,0 +1,5 @@
+work/
+work_dryrun/
+__pycache__/
+*.pyc
+.env
