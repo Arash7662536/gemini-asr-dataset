@@ -1,6 +1,6 @@
 # All paths may be absolute; defaults assume the repo sits next to part_2.
 paths:
-  audio_dir: ../part_2
+  audio_dir: /workspace/DG-Pay-cc/part2
   work_dir: ./work
 
 runtime:
@@ -38,11 +38,14 @@ openrouter:
   concurrency: 8                # parallel in-flight requests (no batch API exists)
   timeout_s: 180
   max_retries: 6
-  reasoning_enabled: false      # turn Gemini "thinking" OFF (cheaper + faster;
-                                # transcription gains nothing from reasoning)
+  reasoning:                    # gemini-3.5-flash REQUIRES reasoning — it cannot
+    effort: low                 # be turned off, only minimized. low effort keeps
+                                # the reasoning output-token cost down. Set the
+                                # whole block to null to send no reasoning field
+                                # (model then uses its default, likely pricier).
   provider: null                # e.g. {order: [google-vertex], allow_fallbacks: true}
   extra_body: null              # raw fields merged into every request body
-  max_cost_usd: 30.0            # hard stop for stage 3; it resumes after a top-up
+  max_cost_usd: 80.0            # hard stop for stage 3; it resumes after a top-up
   prices_per_mtok:              # fallback estimate when the API omits usage.cost
     audio: 3.0                  # gemini-3.5-flash audio input  $/M tokens
     prompt: 1.5                 #                  text input   $/M tokens
@@ -80,7 +83,7 @@ stage5:
   temperature: 0.5              # retry pass samples (self-consistency needs variance)
   model: null                   # null = same as openrouter.model; set e.g.
                                 # google/gemini-3.5-pro for a stronger tiebreaker
-  max_cost_usd: 8.0             # budget for the retry pass only
+  max_cost_usd: 30.0             # budget for the retry pass only
 
 # ---- stage 6: final filtering + Arrow build ----------------------------------
 stage6:

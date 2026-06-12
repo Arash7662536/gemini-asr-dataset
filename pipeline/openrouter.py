@@ -7,9 +7,10 @@ usage (`usage: {include: true}`), with a token-price fallback estimate, and
 accumulate against a hard budget cap — when the cap is hit no new requests
 start and the stage exits cleanly (it is resumable).
 
-Gemini "thinking" is disabled via OpenRouter's unified `reasoning` parameter
-when `reasoning_enabled: false` (saves output tokens and latency; transcription
-does not benefit from it).
+Gemini "thinking" is controlled via OpenRouter's unified `reasoning` parameter,
+passed through verbatim from config. gemini-3.5-flash REQUIRES reasoning (it
+rejects {enabled: false}), so the most you can do is minimize it — {effort: low}
+or a small {max_tokens: N} budget — to limit the reasoning output-token cost.
 """
 import asyncio
 import base64
@@ -78,8 +79,8 @@ def build_payload(orc, model, temperature, b64):
         "max_tokens": orc["max_tokens"],
         "usage": {"include": True},
     }
-    if orc.get("reasoning_enabled") is False:
-        payload["reasoning"] = {"enabled": False}
+    if orc.get("reasoning") is not None:
+        payload["reasoning"] = orc["reasoning"]
     if orc.get("provider"):
         payload["provider"] = orc["provider"]
     if orc.get("extra_body"):
